@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  graphscope-proxy:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      # Override these in .env file or docker-compose.override.yml
+      - GraphScope__TenantId=${TENANT_ID}
+      - GraphScope__ClientId=${CLIENT_ID}
+      - GraphScope__ClientSecret=${CLIENT_SECRET}
+      - GraphScope__JwtSigningKey=${JWT_SIGNING_KEY}
+      - GraphScope__ApiKeys__0=${API_KEY_1}
+      - GraphScope__ApiKeys__1=${API_KEY_2}
+      - GraphScope__RedisConnectionString=${REDIS_CONNECTION_STRING:-}
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - redis
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  redis_data:
