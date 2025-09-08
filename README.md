@@ -49,27 +49,57 @@ See detailed concept and solution plan in: [modelplanning.md](modelplanning.md) 
 ## 📂 Faktisk mappestruktur
 
 ```text
-src/
-  GraphScopeProxy.Api/           # REST API og controllers
-    Controllers/
-      AuthController.cs          # ✅ Login/logout/refresh
-      ProxyController.cs         # ✅ v1.0 Graph API proxy
-      BetaProxyController.cs     # ✅ beta Graph API proxy
-      AdminController.cs         # ✅ Health checks og admin
-    Middleware/
-      ResourceScopeMiddleware.cs # ✅ JWT validering og scope enforcement
-      ErrorHandlingMiddleware.cs # ✅ Global error handling
-  GraphScopeProxy.Core/          # Core business logic
-    Services/
-      GraphApiService.cs         # ✅ Microsoft Graph SDK integration
-      ResourceClassifier.cs      # ✅ Resource type klassifisering
-      JwtService.cs             # ✅ JWT generering og validering
-      ApiKeyService.cs          # ✅ API key til gruppe mapping
-    Models/                     # ✅ Data models
-    Configuration/              # ✅ Options og config
-tests/
-  GraphScopeProxy.Tests/        # ✅ 22 unit tests passerer
-  GraphScopeProxy.IntegrationTests/ # Integration test struktur
+GraphScopeProxy/
+├── src/
+│   ├── GraphScopeProxy.Api/           # REST API og controllers
+│   │   ├── Controllers/
+│   │   │   ├── AuthController.cs      # ✅ Login/logout/refresh
+│   │   │   ├── ProxyController.cs     # ✅ v1.0 Graph API proxy
+│   │   │   ├── BetaProxyController.cs # ✅ beta Graph API proxy
+│   │   │   └── AdminController.cs     # ✅ Health checks og admin
+│   │   ├── Middleware/
+│   │   │   ├── ResourceScopeMiddleware.cs # ✅ JWT validering og scope enforcement
+│   │   │   └── ErrorHandlingMiddleware.cs # ✅ Global error handling
+│   │   ├── GraphHealthCheck.cs        # ✅ Health check implementation
+│   │   ├── Program.cs                 # ✅ Application startup
+│   │   ├── appsettings.json          # Configuration (template)
+│   │   └── GraphScopeProxy.Api.csproj
+│   └── GraphScopeProxy.Core/          # Core business logic
+│       ├── Services/
+│       │   ├── GraphApiService.cs     # ✅ Microsoft Graph SDK integration
+│       │   ├── GraphProxyService.cs   # ✅ HTTP proxy implementation
+│       │   ├── GraphTokenService.cs   # ✅ Graph API token management
+│       │   ├── ResourceClassifier.cs  # ✅ Resource type klassifisering
+│       │   ├── JwtService.cs          # ✅ JWT generering og validering
+│       │   ├── ApiKeyService.cs       # ✅ API key til gruppe mapping
+│       │   ├── MemoryScopeCache.cs    # ✅ In-memory cache implementation
+│       │   ├── RedisScopeCache.cs     # ✅ Redis cache implementation
+│       │   └── I*.cs                  # ✅ Service interfaces
+│       ├── Models/
+│       │   ├── AllowedResource.cs     # ✅ Resource data model
+│       │   ├── ResourceScope.cs       # ✅ User scope model
+│       │   ├── ResourceType.cs        # ✅ Resource type enum
+│       │   ├── LoginRequest.cs        # ✅ Auth request model
+│       │   └── LoginResponse.cs       # ✅ Auth response model
+│       ├── Configuration/
+│       │   └── GraphScopeOptions.cs   # ✅ Configuration options
+│       └── GraphScopeProxy.Core.csproj
+├── tests/
+│   ├── GraphScopeProxy.Tests/         # ✅ 22 unit tests passerer
+│   │   ├── Unit/
+│   │   │   └── Services/              # Service unit tests
+│   │   └── GraphScopeProxy.Tests.csproj
+│   └── GraphScopeProxy.IntegrationTests/ # Integration test struktur
+│       └── GraphScopeProxy.IntegrationTests.csproj
+├── docker-compose.yml                 # ✅ Docker Compose configuration
+├── Dockerfile                         # ✅ Container image definition
+├── GraphScopeProxy.sln               # ✅ Solution file
+├── README.md                         # ✅ Project documentation
+├── MVP-STATUS.md                     # ✅ Implementation status
+├── modelplanning.md                  # ✅ Architecture planning
+├── dotnet-architecture.md            # ✅ Technical architecture
+├── IMPLEMENTATION-STATUS.md          # ✅ Detailed implementation tracking
+└── LICENSE                          # ✅ Project license
 ```
 
 ## ⚙️ Miljøvariabler (utvalg)
