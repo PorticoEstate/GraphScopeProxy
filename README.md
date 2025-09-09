@@ -1,10 +1,28 @@
 # GraphScope Proxy
 
-A lightweight, secure **drop-in HTTP proxy** for **Microsoft Graph API** that mirrors Graph endpoints (`/v1.0/*` and `/beta/*`) 1:1, but introduces **group-controlled resource scoping** (rooms / resource mailboxes) so that clients only get access to a limited set of resources.
+En **sikkerhetsproxy** som begrenser tilgang til Microsoft Graph API ressurser basert på Azure AD-grupper. 
+
+## 🎯 **Hva GraphScope Proxy gjør**
+
+**Problem:** Microsoft Graph API gir tilgang til ALLE ressurser i organisasjonen - ikke ideelt når team/avdelinger kun skal se sine egne rom og utstyr.
+
+**Løsning:** GraphScope Proxy fungerer som et **tilgangskontroll-lag** som:
+- 🔐 **Gruppe-basert tilgang**: Brukere logger inn med API-nøkkel + Azure AD gruppe-ID
+- 🌐 **Transparent proxying**: Speiler alle Graph API endepunkter (`/v1.0/*`, `/beta/*`) 1:1 
+- 🛡️ **Automatisk filtrering**: Returnerer kun ressurser (rom/utstyr) brukeren har tilgang til
+- 🎫 **JWT sikkerhet**: Realtime validering av alle API-kall
+
+**Resultat:**
+```
+Før: Klient ser ALLE 500 rom i organisasjonen  
+Etter: Klient ser kun de 12 rommene i sin avdeling
+```
+
+**Bruksområder:** Facility management, meeting booking, resource planning, multi-tenant Graph API deling.
 
 > **Status: ✅ MVP FERDIG** - Alle kjernekomponenter er implementert og funksjonelle!
 
-> In short: Client logs in with `apiKey` + `groupId` → proxy builds a *permissions list* of rooms in the group → issues a JWT with embedded resource scope → all subsequent Graph calls are filtered/rejected in real-time based on this scope.
+> **Teknisk flyt:** Client logs in with `apiKey` + `groupId` → proxy builds a *permissions list* of rooms in the group → issues a JWT with embedded resource scope → all subsequent Graph calls are filtered/rejected in real-time based on this scope.
 
 See detailed concept and solution plan in: [modelplanning.md](modelplanning.md) and [dotnet-architecture.md](dotnet-architecture.md)
 
